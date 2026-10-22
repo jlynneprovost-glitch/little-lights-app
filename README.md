@@ -2,6 +2,14 @@
 
 A mobile-first bedtime Bible story app for ages 3–7. Built with the requested Next.js 14 App Router, TypeScript, Tailwind, Supabase, Stripe, and Framer Motion. Original SVG illustrations and self-hosted Fredoka/Nunito fonts ship with the app.
 
+## App screenshots
+
+These are screenshots of the running app, not an interactive hosted preview.
+
+![Little Lights desktop home](docs/preview-desktop.png)
+
+[View the mobile app screenshot](docs/preview-mobile.png).
+
 ## Run locally
 
 Use Node.js 22 or newer (validated on Node 24):
