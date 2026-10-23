@@ -1,0 +1,366 @@
+/* Little Lights: a soft, chunky storybook world. */
+:root { --cozy-white: #fff; --cozy-peach: #ffe4c4; --cozy-sky: #a8d8ea; --cozy-yellow: #ffd93d; }
+body { background: #fff8e7; position: relative; isolation: isolate; }
+h1,h2,h3,h4,.display { font-weight: 700; }
+.site-wrap { position: relative; z-index: 1; max-width: 1500px; padding: 0 52px; }
+.site-main { max-width: 1230px; }
+.site-header { height: 112px; border-bottom: 2px dashed #e8dcbd; gap: 16px; }
+.brand > svg { height: 66px; width: 66px; }
+.brand-name { font-size: 36px; font-weight: 700; }
+.brand-tagline { font-size: 11px; letter-spacing: 1.5px; }
+.desktop-nav { gap: 5px; }
+.desktop-nav a { font-size: 16px; padding: 12px 15px; border: 3px solid transparent; }
+.desktop-nav a.active { background: #ffedb5; border-color: #fff; box-shadow: 0 3px 0 #e6d6a6; }
+.parent-link { border: 3px solid #fff; background: #f5ead1; padding: 11px 13px; font-size: 12px; box-shadow: 0 3px 0 #dfd2b6; }
+.header-bedtime { display: flex; align-items: center; gap: 8px; color: #a28f6a; font-family: 'Fredoka',sans-serif; font-size: 13px; line-height: 1.3; }
+.header-bedtime strong { font-weight: 500; }
+.bedtime-moon { display: grid; place-items: center; height: 43px; width: 43px; border-radius: 50%; color: #b09a66; background: #fbefc7; box-shadow: 0 0 23px #f3d87b75; animation: bedtime-glow 4s ease-in-out infinite; }
+.sound-toggle { width: 44px; height: 44px; border: 3px solid #fff; background: #f1e9d8; color: #9b8c70; border-radius: 50%; display: grid; place-items: center; }
+.sound-toggle[aria-pressed=true] { background: #ffe28a; color: #816728; }
+.bedtime-background { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; background: #fff8e7; }
+.bedtime-blob { position: absolute; border-radius: 43% 57% 62% 38% / 56% 34% 66% 44%; filter: blur(1px); opacity: .35; }
+.bedtime-blob-peach { width: 480px; height: 500px; background: #ffe4c4; left: -330px; top: 110px; transform: rotate(-25deg); }
+.bedtime-blob-blue { width: 450px; height: 580px; background: #d7eaf0; right: -330px; top: 280px; }
+.bedtime-blob-yellow { width: 530px; height: 450px; background: #fff0b9; bottom: -310px; left: 23%; }
+.world-twinkle { position: absolute; display: block; color: #e1bf6c; }
+.world-twinkle svg { width: 100%; height: 100%; }
+.bedtime-cloud { position: absolute; width: 150px; opacity: .65; }
+.bedtime-cloud-0 { left: -35px; top: 29%; width: 190px; }
+.bedtime-cloud-1 { right: -25px; top: 13%; }
+.bedtime-cloud-2 { right: -35px; bottom: 9%; width: 200px; }
+.weekly-streak { display: flex; align-items: center; gap: 20px; margin: 26px 0 0; padding: 13px 19px; background: #fff0ce; border: 4px solid #fff; border-radius: 28px; box-shadow: 0 4px 0 #eddfbd; }
+.weekly-streak-copy { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.weekly-avatar { background: #e9dcf0; height: 47px; width: 47px; display: grid; place-items: center; border: 3px solid #fff; border-radius: 50%; color: #8d729d; }
+.weekly-streak-copy strong { font-family: 'Fredoka'; font-size: 20px; font-weight: 600; }
+.weekly-streak-copy p { color: #a38b5c; font-size: 13px; margin-top: 3px; }
+.streak-slots { display: flex; align-items: center; justify-content: center; gap: 9px; margin-left: auto; }
+.streak-star-slot { position: relative; display: grid; place-items: center; width: 43px; height: 43px; border-radius: 15px; background: #e9e3d6; border: 2px solid #fff5df; color: #c4bdae; }
+.streak-star-slot.filled { background: #ffedaf; color: #efbc36; border-color: #fff9dc; filter: drop-shadow(0 2px 0 #dbc57b); }
+.streak-star-slot i { position: absolute; top: -6px; right: -4px; font-size: 15px; color: #d99e30; animation: cozy-twinkle 2s ease-in-out infinite; }
+.weekly-settings { width: 43px; height: 43px; display: grid; place-items: center; background: #fff8e7; border: 3px solid #fff; border-radius: 50%; color: #ab9570; }
+.cozy-welcome { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 34px 5px 29px; }
+.cozy-kicker { display: inline-flex; align-items: center; gap: 7px; color: #a58a5c; font-size: 11px; line-height: 1.5; font-weight: 900; letter-spacing: 1.8px; }
+.cozy-kicker > span { width: 7px; height: 7px; border-radius: 50%; background: #dfb259; }
+.cozy-welcome h1 { font-family: 'Fredoka'; font-size: clamp(36px,3.7vw,54px); letter-spacing: -1.7px; color: #61503d; margin: 8px 0 10px; }
+.cozy-welcome h1 > span { color: #e9ba4f; margin-left: 11px; font-size: .8em; display: inline-block; transform: rotate(9deg); }
+.cozy-welcome p { font-size: 18px; color: #a28c6c; }
+.welcome-doodle { color: #bd9c65; font: 500 20px/1.4 'Fredoka'; transform: rotate(7deg); text-align: center; margin-right: 20px; flex-shrink: 0; }
+.welcome-doodle strong { font-weight: 500; text-decoration: underline wavy #dbc08a; text-underline-offset: 6px; }
+.welcome-doodle svg { width: 70px; height: 32px; margin: 6px 0 0 40px; }
+.adventure-hero { position: relative; display: grid; grid-template-columns: .9fr 1.35fr; min-height: 580px; border: 4px solid #fff; border-radius: 28px; background: #a8d8ea; isolation: isolate; box-shadow: 0 8px 0 #a8cdd6, 0 18px 42px #91b4b42e, 0 0 42px #f8dc8333; }
+.adventure-hero::before { content: ''; position: absolute; inset: 0; border-radius: 24px; background: radial-gradient(ellipse at 23% 28%,#e7f3ee 0%,#e7f3ee99 27%,transparent 66%); pointer-events: none; z-index: -1; }
+.hero-paper-cloud { position: absolute; pointer-events: none; opacity: .55; background: #fff9e9; border-radius: 70px; width: 100px; height: 28px; }
+.hero-paper-cloud::before,.hero-paper-cloud::after { content: ''; position: absolute; background: inherit; border-radius: 50%; bottom: 6px; }
+.hero-paper-cloud::before { width: 50px; height: 40px; left: 10px; }
+.hero-paper-cloud::after { width: 40px; height: 36px; right: 7px; }
+.hero-paper-cloud-one { right: 27%; top: 33px; transform: scale(.7); }
+.hero-paper-cloud-two { left: 25%; bottom: 36px; transform: scale(.6); }
+.adventure-copy { padding: 48px 0 63px 35px; position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; }
+.adventure-label { display: inline-flex; align-items: center; gap: 8px; background: #fff4d3; border: 2px solid #fff; border-radius: 28px; padding: 10px 14px; font-size: 11px; font-weight: 900; letter-spacing: 1.5px; color: #9e8755; }
+.adventure-label svg { color: #d3ac52; }
+.adventure-copy h2 { font-size: clamp(40px,4.5vw,66px); line-height: 1.07; color: #506c62; font-weight: 700; letter-spacing: -1.8px; margin-top: 23px; max-width: 400px; }
+.adventure-copy > p { font-size: 24px; font-weight: 700; color: #527465; line-height: 1.5; max-width: 330px; margin-top: 18px; }
+.adventure-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+.adventure-badges > span { display: flex; align-items: center; gap: 6px; border: 2px solid #fff; background: #f3f7e8; color: #6e805e; font-size: 12px; border-radius: 28px; padding: 6px 9px; }
+.cozy-play { display: flex; align-items: center; justify-content: center; gap: 14px; position: relative; border: 4px solid #fff; border-radius: 28px; background: #ffd93d; padding: 13px 22px 13px 10px; min-height: 85px; margin-top: 28px; box-shadow: 0 7px 0 #d9b34a, 0 12px 20px #c1a53a25; color: #70592c; font-family: 'Fredoka'; font-size: 30px; font-weight: 700; white-space: nowrap; }
+.play-button-lumo { width: 62px; height: 62px; margin-top: -10px; margin-bottom: -9px; }
+.read-together-note { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #5f7c6e; margin-top: 20px; }
+.adventure-picture { position: relative; min-width: 0; padding: 57px 25px 91px 0; display: flex; align-items: center; }
+.adventure-picture-frame { width: 100%; aspect-ratio: 1.5; position: relative; background: #fff6df; border: 4px solid #fff; border-radius: 35% 27% 29% 30% / 24% 24% 28% 32%; box-shadow: 0 10px 0 #a5c8bd55; overflow: hidden; transform: rotate(-3deg); }
+.adventure-scene { height: 100%; width: 100%; display: block; transform: scale(1.07); }
+.picture-spark { position: absolute; color: #fff6bc; font-size: 48px; text-shadow: 0 2px 0 #d5bd72; animation: cozy-twinkle 2s ease-in-out infinite; }
+.picture-spark-one { top: 15%; right: 9%; }
+.picture-spark-two { left: 7%; bottom: 14%; font-size: 32px; animation-delay: .8s; }
+.hero-buddies { position: absolute; right: 0; bottom: -4px; display: flex; align-items: end; z-index: 3; filter: drop-shadow(0 9px 3px #67998b1c); }
+.hero-buddy-lumo { width: 172px; height: 172px; margin-right: -32px; transform: rotate(-12deg); }
+.hero-buddy-pip { width: 170px; height: 170px; transform: rotate(7deg); }
+.hero-buddy-bubble { position: absolute; bottom: 163px; right: 25px; background: #fff8e7; border: 4px solid #fff; color: #9a8765; font-family: 'Fredoka'; font-size: 18px; padding: 11px 17px; border-radius: 28px; transform: rotate(4deg); box-shadow: 0 3px 0 #a6c4b949; z-index: 4; }
+.hero-buddy-bubble::after { content: ''; position: absolute; right: 35px; bottom: -11px; height: 18px; width: 18px; border-bottom: 4px solid #fff; border-right: 4px solid #fff; background: #fff8e7; transform: rotate(45deg); }
+.hero-buddy-bubble > span { color: #e6aaa4; margin-left: 6px; }
+.hero-bottom-label { position: absolute; bottom: 17px; left: 36px; display: flex; align-items: center; gap: 7px; color: #779487; font-size: 12px; z-index: 2; }
+.hero-bottom-label svg { color: #cc9d91; }
+.cozy-reassurance { display: flex; align-items: center; justify-content: center; gap: 45px; margin: 28px 0 31px; }
+.cozy-reassurance > span { display: flex; gap: 8px; align-items: center; color: #ab9672; font-size: 12px; }
+.reassurance-icon { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: #f3e8cb; color: #b5a074; font-size: 25px; }
+.treasure-and-tip { display: grid; grid-template-columns: 1.55fr 1fr; gap: 24px; margin: 0 0 39px; }
+.treasure-box-card { position: relative; display: flex; align-items: center; min-width: 0; min-height: 235px; gap: 17px; padding: 20px; border: 4px solid #fff; border-radius: 28px; background: #ffe4c4; box-shadow: 0 6px 0 #ead1af; }
+.treasure-chest-wrap { position: relative; flex-shrink: 0; width: 170px; }
+.treasure-chest-art { display: block; width: 170px; height: 170px; }
+.treasure-spark { position: absolute; top: 2px; left: 0; font-size: 36px; color: #d7a646; animation: cozy-twinkle 2s ease-in-out infinite; }
+.treasure-copy { position: relative; z-index: 1; min-width: 0; }
+.treasure-copy .cozy-kicker { font-size: 8px; letter-spacing: 1px; }
+.treasure-copy h2 { font-size: 32px; color: #9a704a; margin-top: 7px; }
+.treasure-copy > p { font-family: 'Fredoka'; color: #bc936b; font-size: 24px; margin-top: 8px; }
+.treasure-copy > p strong { color: #a78048; font-weight: 700; }
+.treasure-copy > p > span { font-size: 17px; margin-left: 6px; color: #dfb653; }
+.treasure-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'Fredoka'; font-size: 22px; color: #ad8251; margin-top: 17px; }
+.treasure-link:hover { text-decoration: underline; text-underline-offset: 6px; }
+.treasure-sticker-peek { display: none; }
+.pip-tip-card { position: relative; min-height: 235px; border: 4px solid #fff; border-radius: 28px; padding: 22px 15px 22px 22px; background: #e9e8ef; box-shadow: 0 6px 0 #d6d0de; display: flex; align-items: center; }
+.pip-speech { position: relative; border: 2px solid #fff; border-radius: 24px; background: #fff8e7; padding: 20px 15px; min-width: 0; flex: 1; margin-right: 85px; z-index: 1; }
+.pip-speech::after { content: ''; position: absolute; right: -9px; top: 60%; height: 16px; width: 16px; border-right: 2px solid #fff; border-top: 2px solid #fff; background: #fff8e7; transform: rotate(45deg); }
+.pip-speech > span:first-child { font-size: 8px; color: #b2a080; font-weight: 900; letter-spacing: 1px; }
+.pip-speech p { font: 500 23px/1.35 'Fredoka'; color: #9b886d; margin-top: 8px; }
+.pip-speech strong { color: #a18b5c; font-weight: 600; }
+.speech-heart { position: absolute; bottom: -15px; right: 18px; font-size: 36px; color: #dfb1ac; transform: rotate(-12deg); }
+.tip-pip { position: absolute; height: 135px; width: 135px; bottom: 3px; right: -8px; z-index: 2; }
+.cozy-stories .section-heading { margin-bottom: 23px; }
+.cozy-stories .section-heading h2 { font-size: 36px; color: #7c6850; margin-top: 7px; }
+.cozy-stories .section-heading h2 > span { color: #d9b366; }
+.all-stories-link { display: inline-flex; align-items: center; gap: 8px; font-family: 'Fredoka'; font-size: 21px; color: #ab8f5d; }
+.story-card { border: 4px solid #fff; border-radius: 28px; background: #fff0ce; box-shadow: 0 6px 0 #e8d9b5; }
+.story-card-art { height: 230px; background: #cde7d3; }
+.story-card-copy { padding: 21px 20px 15px; }
+.story-card h3 { font-size: 28px; color: #7b674f; margin-top: 12px; }
+.story-card-copy > p { font-size: 16px; line-height: 1.6; margin-top: 10px; color: #a38d70; }
+.story-theme { font-size: 9px; letter-spacing: 1.2px; color: #b29b71; }
+.story-card-time { display: inline-flex; align-items: center; gap: 4px; font-size: 12px; color: #ac9979; }
+.free-badge { border: 2px solid #fff; font-size: 9px; padding: 7px 10px; background: #fff5d2; }
+.free-badge.premium { background: #eee2f3; border-color: #fff; }
+.card-bottom { border-top: 2px dashed #e9d8b8; padding-top: 13px; margin-top: 17px; }
+.card-bottom > span:first-child { font-size: 12px; color: #a99575; }
+.card-play { height: 39px; width: 39px; border: 3px solid #fff; background: #ffdc72; color: #b0964e; }
+.cozy-setup-strip { display: flex; align-items: center; gap: 17px; background: #eaf0d7; border: 4px solid #fff; border-radius: 28px; padding: 18px 22px; margin-top: 36px; box-shadow: 0 5px 0 #dce2c5; }
+.cozy-setup-strip strong { font: 600 22px 'Fredoka'; color: #8a9871; }
+.cozy-setup-strip p { font-size: 14px; color: #a5ad8b; margin-top: 5px; }
+.setup-buddies { display: flex; align-items: end; }
+.cozy-setup-strip .btn { margin-left: auto; font-size: 18px; }
+.btn { border: 4px solid #fff; border-radius: 28px; font: 600 21px/1.25 'Fredoka'; min-height: 57px; padding: 13px 21px; color: #87734e; box-shadow: 0 5px 0 #d9c9a4,0 8px 16px #cabb9b24; }
+.btn:hover:not(:disabled) { box-shadow: 0 7px 0 #d9c9a4,0 10px 18px #cabb9b24; }
+.btn:active:not(:disabled) { transform: translateY(2px) scale(.95); box-shadow: 0 2px 0 #d9c9a4; }
+.btn-yellow { background: #ffd93d; box-shadow: 0 5px 0 #dbc05f,0 8px 16px #cabb9b24; }
+.card,.sticker-tile,.milestone,.plan-card,.modal-panel { border-width: 4px; border-style: solid; border-color: #fff; border-radius: 28px; }
+.plan-card.selected { border: 4px solid #d8ae4d; }
+.site-footer { max-width: 1230px; border-top: 2px dashed #eadfc7; margin-top: 42px; padding: 24px 0 28px; font-size: 11px; }
+.mobile-nav { border-top: 4px solid #fff; }
+.mobile-nav a.active { background: #ffe7a3; }
+.mobile-nav a { border-radius: 22px; }
+.modal-backdrop { z-index: 70; }
+@keyframes cozy-twinkle { 0%,100% { opacity: .45; transform: scale(.8) rotate(-5deg); } 50% { opacity: 1; transform: scale(1.15) rotate(7deg); } }
+@keyframes cozy-bounce { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes cozy-float { 0%,100% { transform: translate(0,0); } 50% { transform: translate(18px,-6px); } }
+@keyframes bedtime-glow { 0%,100% { box-shadow: 0 0 16px #f3d87b50; } 50% { box-shadow: 0 0 30px #f3d87b90; } }
+@media(min-width:1450px) { .adventure-hero { min-height: 620px; } .adventure-copy { padding-top: 58px; padding-left: 40px; } .adventure-copy h2 { font-size: 68px; } }
+@media(max-width:1200px) {
+  .site-wrap { padding: 0 30px; }
+  .site-header { gap: 12px; }
+  .header-bedtime > span:nth-child(2) { display: none; }
+  .desktop-nav a { font-size: 14px; padding: 10px; }
+  .brand-name { font-size: 32px; }
+  .brand > svg { height: 56px; width: 56px; }
+  .adventure-hero { min-height: 560px; }
+  .adventure-copy { padding-left: 28px; padding-top: 40px; }
+  .adventure-copy h2 { font-size: 52px; }
+  .adventure-copy > p { font-size: 22px; max-width: 290px; }
+  .cozy-play { font-size: 27px; gap: 8px; padding-right: 16px; }
+  .adventure-picture { padding-right: 15px; }
+  .hero-buddy-lumo,.hero-buddy-pip { width: 145px; height: 145px; }
+  .hero-buddy-bubble { bottom: 140px; right: 12px; font-size: 16px; }
+  .treasure-and-tip { grid-template-columns: 1.35fr 1fr; gap: 19px; }
+  .treasure-chest-wrap,.treasure-chest-art { width: 140px; }
+  .treasure-copy h2 { font-size: 29px; }
+  .treasure-copy .cozy-kicker { font-size: 7px; letter-spacing: .6px; }
+  .pip-speech { padding: 16px 12px; margin-right: 70px; }
+  .pip-speech p { font-size: 21px; }
+  .tip-pip { width: 115px; height: 115px; }
+}
+@media(max-width:1000px) {
+  .desktop-nav { display: none; }
+  .header-bedtime { margin-left: auto; }
+  .header-bedtime > span:nth-child(2) { display: block; }
+  .cozy-welcome h1 { font-size: 44px; }
+  .weekly-streak-copy strong { font-size: 18px; }
+  .streak-slots { gap: 6px; }
+  .streak-star-slot { width: 35px; height: 39px; border-radius: 13px; }
+  .streak-star-slot svg { width: 23px; }
+  .adventure-hero { grid-template-columns: 1fr 1.1fr; min-height: 535px; }
+  .adventure-copy h2 { font-size: 46px; }
+  .adventure-copy > p { font-size: 24px; max-width: 260px; }
+  .adventure-picture { padding-top: 80px; }
+  .hero-buddies { right: 0; bottom: 0; }
+  .hero-buddy-lumo,.hero-buddy-pip { width: 128px; height: 128px; }
+  .hero-buddy-bubble { bottom: 125px; font-size: 15px; right: 9px; }
+  .adventure-badges > span { font-size: 10px; padding: 5px 6px; }
+  .cozy-play { font-size: 25px; min-height: 76px; }
+  .play-button-lumo { width: 50px; height: 50px; }
+  .cozy-reassurance { gap: 22px; }
+  .cozy-reassurance > span { font-size: 11px; }
+  .treasure-and-tip { grid-template-columns: 1fr 1fr; }
+  .treasure-box-card { padding: 16px 12px; gap: 2px; }
+  .treasure-chest-wrap,.treasure-chest-art { width: 105px; }
+  .treasure-copy h2 { font-size: 26px; }
+  .treasure-copy .cozy-kicker { font-size: 6px; }
+  .treasure-copy > p { font-size: 24px; }
+  .treasure-link { font-size: 20px; }
+  .story-card-art { height: 185px; }
+  .story-card-copy { padding: 17px 14px 12px; }
+  .story-card h3 { font-size: 24px; }
+  .cozy-setup-strip strong { font-size: 19px; }
+  .cozy-setup-strip .btn { font-size: 16px; padding: 11px 14px; }
+}
+@media(max-width:760px) {
+  .site-wrap { padding: 0 22px; }
+  .site-header { height: 94px; }
+  .brand-name { font-size: 32px; }
+  .brand-tagline { font-size: 9px; }
+  .brand > svg { width: 54px; height: 54px; }
+  .parent-link span { display: none; }
+  .parent-link { height: 44px; width: 44px; padding: 0; display: grid; place-items: center; }
+  .header-bedtime > span:nth-child(2) { display: none; }
+  .weekly-streak { flex-wrap: wrap; gap: 9px; padding: 13px 15px; margin-top: 21px; }
+  .weekly-streak-copy { flex: 1; order: 0; }
+  .weekly-settings { order: 1; }
+  .streak-slots { order: 2; flex: 0 0 100%; width: 100%; margin-top: 6px; gap: 9px; justify-content: space-between; }
+  .streak-star-slot { height: 39px; width: 44px; }
+  .cozy-welcome { padding: 30px 0 24px; }
+  .cozy-welcome h1 { font-size: 39px; letter-spacing: -1px; }
+  .cozy-welcome p { font-size: 16px; max-width: 400px; line-height: 1.6; }
+  .welcome-doodle { display: none; }
+  .adventure-hero { display: flex; flex-direction: column; min-height: auto; }
+  .adventure-copy { padding: 27px 28px 0; }
+  .adventure-copy h2 { font-size: 48px; max-width: 420px; margin-top: 19px; }
+  .adventure-copy > p { max-width: 410px; font-size: 24px; line-height: 1.4; margin-top: 12px; }
+  .adventure-badges { margin-top: 16px; gap: 7px; }
+  .adventure-badges > span { font-size: 12px; padding: 6px 9px; }
+  .cozy-play { width: 100%; font-size: 31px; min-height: 82px; margin-top: 23px; gap: 15px; }
+  .play-button-lumo { width: 62px; height: 62px; }
+  .read-together-note { align-self: center; font-size: 12px; margin-top: 18px; }
+  .adventure-picture { padding: 28px 15px 97px; margin-top: 0; min-height: 390px; }
+  .adventure-picture-frame { max-width: 550px; margin: auto; }
+  .hero-buddies { bottom: -1px; right: 16px; }
+  .hero-buddy-lumo,.hero-buddy-pip { width: 140px; height: 140px; }
+  .hero-buddy-bubble { bottom: 137px; right: 20px; font-size: 17px; }
+  .hero-bottom-label { bottom: 21px; left: 23px; max-width: 160px; font-size: 11px; align-items: flex-start; line-height: 1.5; }
+  .hero-bottom-label svg { margin-top: 2px; }
+  .cozy-reassurance { gap: 12px; margin: 25px 0; justify-content: space-between; }
+  .cozy-reassurance > span { font-size: 9px; gap: 5px; max-width: 140px; }
+  .reassurance-icon { width: 26px; height: 26px; flex-shrink: 0; }
+  .treasure-and-tip { grid-template-columns: 1fr; gap: 25px; margin-bottom: 37px; }
+  .treasure-box-card { padding: 20px; gap: 18px; min-height: 230px; }
+  .treasure-chest-wrap,.treasure-chest-art { width: 170px; height: 170px; }
+  .treasure-copy h2 { font-size: 34px; }
+  .treasure-copy .cozy-kicker { font-size: 8px; letter-spacing: .8px; }
+  .treasure-link { font-size: 24px; }
+  .pip-tip-card { min-height: 230px; padding: 22px; }
+  .pip-speech { margin-right: 125px; padding: 20px; }
+  .pip-speech p { font-size: 25px; }
+  .pip-speech > span:first-child { font-size: 10px; }
+  .tip-pip { height: 180px; width: 180px; right: 5px; bottom: 1px; }
+  .cozy-stories .section-heading h2 { font-size: 29px; }
+  .cozy-stories .cozy-kicker { font-size: 8px; }
+  .all-stories-link { font-size: 17px; white-space: nowrap; }
+  .home-redesign .story-grid { display: flex; overflow-x: auto; gap: 17px; scroll-snap-type: x mandatory; padding: 0 2px 9px; }
+  .home-redesign .story-card { flex: 0 0 80%; min-width: 0; scroll-snap-align: start; }
+  .story-card-art { height: 220px; }
+  .story-card h3 { font-size: 28px; }
+  .story-card-copy { padding: 20px; }
+  .cozy-setup-strip { padding: 17px; gap: 12px; flex-wrap: wrap; }
+  .cozy-setup-strip > div:nth-child(2) { flex: 1; }
+  .cozy-setup-strip strong { font-size: 21px; }
+  .cozy-setup-strip p { font-size: 13px; }
+  .cozy-setup-strip .btn { width: 100%; margin-top: 2px; font-size: 22px; }
+  .site-footer { font-size: 10px; }
+}
+@media(max-width:480px) {
+  .site-wrap { padding: 0 16px; }
+  .site-header { height: 90px; gap: 9px; }
+  .brand { gap: 2px; }
+  .brand-name { font-size: 29px; }
+  .brand > svg { width: 47px; height: 47px; }
+  .brand-tagline { font-size: 8px; }
+  .parent-link { display: none; }
+  .header-bedtime { gap: 5px; }
+  .header-bedtime .bedtime-moon { width: 34px; height: 34px; }
+  .header-bedtime .bedtime-moon svg { width: 23px; height: 23px; }
+  .sound-toggle { width: 40px; height: 40px; }
+  .weekly-streak { padding: 12px; border-radius: 28px; }
+  .weekly-streak-copy { gap: 9px; }
+  .weekly-streak-copy strong { font-size: 19px; }
+  .weekly-streak-copy p { font-size: 11px; }
+  .weekly-avatar { width: 40px; height: 40px; }
+  .streak-slots { gap: 5px; }
+  .streak-star-slot { width: 35px; height: 36px; border-radius: 12px; }
+  .weekly-settings { width: 35px; height: 35px; }
+  .cozy-welcome { padding: 27px 2px 23px; }
+  .cozy-kicker { font-size: 9px; letter-spacing: 1.3px; }
+  .cozy-welcome h1 { font-size: 39px; max-width: 330px; line-height: 1.12; }
+  .cozy-welcome p { display: none; }
+  .adventure-copy { padding: 26px 21px 0; }
+  .adventure-label { font-size: 9px; padding: 9px 11px; letter-spacing: 1.2px; }
+  .adventure-copy h2 { font-size: 45px; max-width: 290px; }
+  .adventure-copy > p { display: none; }
+  .adventure-badges { gap: 6px; }
+  .adventure-badges > span { font-size: 10px; padding: 6px 7px; gap: 4px; }
+  .adventure-badges svg { height: 14px; width: 14px; }
+  .cozy-play { min-height: 80px; font-size: 28px; gap: 8px; padding-left: 5px; padding-right: 12px; }
+  .play-button-lumo { width: 55px; height: 55px; }
+  .cozy-play > svg:last-child { width: 25px; }
+  .read-together-note { font-size: 11px; gap: 5px; }
+  .adventure-picture { min-height: 305px; padding: 23px 10px 95px; }
+  .hero-buddy-lumo,.hero-buddy-pip { height: 120px; width: 120px; }
+  .hero-buddies { right: 1px; }
+  .hero-buddy-lumo { margin-right: -30px; }
+  .hero-buddy-bubble { bottom: 117px; right: 12px; font-size: 15px; padding: 9px 12px; }
+  .hero-bottom-label { left: 16px; bottom: 17px; max-width: 120px; font-size: 10px; gap: 4px; }
+  .cozy-reassurance { gap: 8px; margin-top: 22px; margin-bottom: 26px; }
+  .cozy-reassurance > span { font-size: 8px; line-height: 1.5; max-width: 105px; }
+  .reassurance-icon { width: 23px; height: 23px; font-size: 21px; }
+  .reassurance-icon svg { width: 14px; height: 14px; }
+  .treasure-box-card { padding: 18px 14px; gap: 5px; min-height: 216px; }
+  .treasure-chest-wrap,.treasure-chest-art { width: 125px; height: 150px; }
+  .treasure-copy h2 { font-size: 29px; }
+  .treasure-copy .cozy-kicker { font-size: 6px; letter-spacing: .5px; }
+  .treasure-copy > p { font-size: 24px; }
+  .treasure-link { font-size: 22px; gap: 5px; }
+  .pip-tip-card { min-height: 220px; padding: 19px 14px; }
+  .pip-speech { margin-right: 92px; padding: 20px 13px; }
+  .pip-speech > span:first-child { font-size: 8px; }
+  .pip-speech p { font-size: 24px; }
+  .tip-pip { width: 145px; height: 145px; right: -3px; }
+  .cozy-stories .section-heading { gap: 8px; align-items: center; }
+  .cozy-stories .section-heading h2 { font-size: 28px; max-width: 240px; }
+  .cozy-stories .cozy-kicker { font-size: 7px; letter-spacing: .9px; }
+  .all-stories-link { font-size: 17px; gap: 4px; }
+  .all-stories-link svg { width: 17px; }
+  .home-redesign .story-card { flex-basis: 86%; }
+  .story-card-art { height: 210px; }
+  .library-grid .story-card h3 { font-size: 24px; }
+  .library-grid .story-card-copy { padding: 13px 10px; }
+  .library-grid .story-card-art { height: 140px; }
+  .library-grid .card-bottom > span:first-child { font-size: 9px; }
+  .library-grid .card-play { width: 28px; height: 28px; }
+  .library-grid .story-card-time { font-size: 9px; }
+  .cozy-setup-strip { margin-top: 25px; }
+  .cozy-setup-strip strong { font-size: 19px; }
+  .cozy-setup-strip p { font-size: 12px; }
+  .setup-buddies > svg { width: 49px; height: 49px; }
+  .site-footer { margin-top: 30px; padding-bottom: 115px; font-size: 8px; gap: 12px; }
+  .site-footer > div > svg { width: 27px; height: 27px; }
+  .mobile-nav { padding-top: 9px; padding-bottom: calc(9px + env(safe-area-inset-bottom)); box-shadow: 0 -6px 18px #b3a07915; }
+  .mobile-nav > a { font-size: 11px; min-width: 64px; gap: 4px; }
+  .mobile-nav > a.active { box-shadow: 0 2px 0 #e1c47c; }
+  .bedtime-cloud-0 { left: -85px; top: 20%; }
+  .bedtime-cloud-1 { right: -90px; top: 9%; }
+}
+@media(max-width:350px) {
+  .site-wrap { padding: 0 12px; }
+  .brand-name { font-size: 26px; }
+  .brand > svg { width: 40px; height: 40px; }
+  .header-bedtime .bedtime-moon { display: none; }
+  .cozy-welcome h1 { font-size: 36px; }
+  .adventure-copy { padding: 24px 16px 0; }
+  .adventure-copy h2 { font-size: 39px; }
+  .cozy-play { font-size: 26px; }
+  .cozy-play > svg:last-child { width: 21px; }
+  .read-together-note { font-size: 10px; }
+  .treasure-chest-wrap,.treasure-chest-art { width: 100px; }
+  .treasure-copy h2 { font-size: 27px; }
+  .treasure-link { font-size: 20px; }
+  .pip-speech { margin-right: 70px; padding-left: 10px; padding-right: 10px; }
+  .tip-pip { width: 126px; height: 126px; }
+}
+@media(prefers-reduced-motion:reduce) {
+  *,*::before,*::after { animation: none !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+  .world-twinkle { opacity: .6; }
+}
+@media print { .bedtime-background { display:none; } }

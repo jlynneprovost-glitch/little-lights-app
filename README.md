@@ -2,6 +2,8 @@
 
 A mobile-first bedtime Bible story app for ages 3–7. Built with the requested Next.js 14 App Router, TypeScript, Tailwind, Supabase, Stripe, and Framer Motion. Original SVG illustrations and self-hosted Fredoka/Nunito fonts ship with the app.
 
+The home and reader now use a cozy storybook design: cream backgrounds, pastel cards with 4px white frames, large Fredoka type, ten twinkling stars, drifting clouds, and animated Lumo and Pip. The seven-night star bar reflects actual reading history. The treasure chest opens the existing sticker collection. Gentle button pops are optional through the bedtime sound toggle and respect the saved preference; reduced-motion settings keep all controls usable.
+
 ## App screenshots
 
 These are screenshots of the running app, not an interactive hosted preview.
@@ -9,6 +11,8 @@ These are screenshots of the running app, not an interactive hosted preview.
 ![Little Lights desktop home](docs/preview-desktop.png)
 
 [View the mobile app screenshot](docs/preview-mobile.png).
+
+[View the redesigned story reader](docs/preview-reader.png).
 
 ## Run locally
 
@@ -57,6 +61,14 @@ npm run test:e2e
 ```
 
 Unit and database tests execute the real PostgreSQL schema in PGlite and test access controls, subscription forgery, paid story protection, content limits, daily reward idempotency, private drawing ownership, admin session integrity, and account deletion ordering. Playwright covers the complete free bedtime journey and mobile layout. Use `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH=/usr/bin/chromium` when using a system browser; otherwise install one with `npx playwright install chromium`.
+
+## Vercel deployment
+
+The repository uses Vercel's standard Next.js auto-detection; no existing files or backend features were removed for the redesign. To redeploy an existing project, connect this GitHub repository and select `main` as its production branch. Set the app's service variables in that Vercel project's environment settings and use its HTTPS origin for `NEXT_PUBLIC_APP_URL`.
+
+The GitHub repository links to [little-lights-app-wine.vercel.app](https://little-lights-app-wine.vercel.app). This is the existing site address; the cloud workspace could not verify which commit it serves.
+
+For a deployment initiated from the cloud workspace, provide `VERCEL_TOKEN` securely and configure the non-secret `VERCEL_ORG_ID` and `VERCEL_PROJECT_ID`. The onboarding configuration draft declares these requirements and the `api.vercel.com` destination. Draft saving does not authenticate, deploy, or publish anything. The current environment has no Vercel credentials/project linkage, and its runtime network denied Vercel API access; an existing Git-triggered deployment could not be confirmed. Resolve the Next.js security blocker below before public deployment.
 
 ## PWA and offline behavior
 

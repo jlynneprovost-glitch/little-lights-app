@@ -23,7 +23,7 @@ test('welcomes a family with working story cards, SEO, and install assets', asyn
   await page.goto('/');
   await expect(page).toHaveTitle('Little Lights - Bedtime Bible Stories for Kids');
   await expect(page.getByRole('heading', { name: /Big stories\. Little hearts\./ })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Let’s read together/ })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Let’s Read!/ })).toBeVisible();
   await expect(page.getByRole('button', { name: /Read The Little Lost Sheep/ })).toBeVisible();
   await expect(page.getByRole('link', { name: 'Little Lights home' })).toBeVisible();
   await expect(page.locator('body')).toHaveCSS('background-color', 'rgb(255, 248, 231)');
@@ -53,7 +53,7 @@ test('keeps every main screen within the viewport and filters the story library'
 
 test('completes onboarding, reading, quiz, drawing, rewards, and parent settings', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: /Let’s read together/ }).click();
+  await page.getByRole('button', { name: /Let’s Read!/ }).click();
   const welcome = page.getByRole('dialog', { name: 'Welcome to Little Lights' });
   await expect(welcome.getByRole('heading', { name: 'Ready for tonight’s adventure?' })).toBeVisible();
   await welcome.getByLabel('Little one’s first name').fill('Oliver');

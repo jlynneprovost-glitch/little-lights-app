@@ -9,6 +9,7 @@ import type { Completion, Profile, Story } from '@/lib/types';
 import { Lumo, Pip } from './illustrations';
 
 type Context = {
+  soundEnabled: boolean; toggleSound: () => void;
   profile: Profile | null; progress: Completion[]; isDemo: boolean; subscribed: boolean;
   stickers: {stickerId: string; earnedAt: string}[];
   completeStory: (id: string, coloringDataUrl?: string) => Promise<void>;
@@ -31,6 +32,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [paywall, setPaywall] = useState(false);
   const [toast, setToast] = useState('');
   const [ready, setReady] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(false);
   const router = useRouter();
   const toastTimer = useRef<ReturnType<typeof setTimeout>>();
   const notify = useCallback((message: string) => { setToast(message); clearTimeout(toastTimer.current); toastTimer.current = setTimeout(()=>setToast(''),4500); }, []);
@@ -39,6 +41,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     const loadPreview=()=>{try { const saved = localStorage.getItem(STORAGE_KEY); if (saved) { const data=JSON.parse(saved); setProfile(data.profile || null); setProgress(Array.isArray(data.progress)?data.progress:[]); setStickers(Array.isArray(data.stickers)?data.stickers:[]); } } catch { /* A fresh family can still start when storage is unavailable. */ }};
     if(!process.env.NEXT_PUBLIC_SUPABASE_URL||!process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)loadPreview();
     setReady(true);
+    try { setSoundEnabled(localStorage.getItem('little-lights-sound-v1') === 'on'); } catch { /* Sound stays optional when storage is unavailable. */ }
     fetch('/api/account').then(async r=>{
       if (r.status===503) {setIsDemo(true);loadPreview();return;}
       setIsDemo(false);
@@ -59,6 +62,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try { localStorage.setItem(STORAGE_KEY,JSON.stringify({profile,progress,stickers})); }
     catch { notify('Your browser couldn’t save this drawing. Download it to keep it.'); }
   },[profile,progress,stickers,ready,isDemo,notify]);
+  useEffect(()=>{if(!ready)return;try{localStorage.setItem('little-lights-sound-v1',soundEnabled?'on':'off');}catch{/* Sound preferences are optional. */}},[soundEnabled,ready]);
   useEffect(()=>{
     if(new URLSearchParams(window.location.search).get('checkout')!=='success')return;
     let attempts=0;
@@ -101,9 +105,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     if (!profile) {openOnboarding('/read/'+story.id);return;}
     router.push('/read/'+story.id);
   };
-  return <AppContext.Provider value={{profile,progress,stickers,isDemo,subscribed,completeStory,hasAccess,openPaywall:()=>setPaywall(true),openOnboarding,updateProfile,startStory,notify}}>
+  return <AppContext.Provider value={{profile,progress,stickers,isDemo,subscribed,soundEnabled,toggleSound:()=>setSoundEnabled(value=>!value),completeStory,hasAccess,openPaywall:()=>setPaywall(true),openOnboarding,updateProfile,startStory,notify}}>
     {children}
-    <HeartPops />
+    <HeartPops soundEnabled={soundEnabled} />
     <AnimatePresence>{onboarding&&<Onboarding onClose={()=>setOnboarding(false)} onSave={async value=>{
       if(isDemo) {await updateProfile(value);setOnboarding(false);if(nextRoute)router.push(nextRoute);}
       else {const r=await fetch('/api/auth/sign-in',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:value.email,kidName:value.kidName,kidAge:value.kidAge,bedtime:value.bedtime})}); const data=await r.json();if(!r.ok)throw new Error(data.error||'Couldn’t send your sign-in link.');setProfile(value);notify('Check your parent email for a secure sign-in link.');setOnboarding(false);}
@@ -154,8 +158,56 @@ function Paywall({onClose}:{onClose:()=>void}) {
   </Modal>;
 }
 
-function HeartPops() {
-  const [pops,setPops]=useState<{id:number;x:number;y:number}[]>([]);
-  useEffect(()=>{const handler=(e:PointerEvent)=>{if(e.pointerType==='mouse'&&e.button!==0||matchMedia('(prefers-reduced-motion: reduce)').matches)return;const id=Date.now();setPops(p=>[...p.slice(-4),{id,x:e.clientX,y:e.clientY}]);setTimeout(()=>setPops(p=>p.filter(item=>item.id!==id)),700);};document.addEventListener('pointerdown',handler);return()=>document.removeEventListener('pointerdown',handler);},[]);
-  return <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden" aria-hidden="true">{pops.map(p=><motion.span key={p.id} className="absolute text-[#E89C99]" style={{left:p.x-8,top:p.y-8}} initial={{scale:.3,opacity:1,y:0}} animate={{scale:1.2,opacity:0,y:-55}} transition={{duration:.7}}><Heart size={19} fill="currentColor"/></motion.span>)}</div>;
+function HeartPops({ soundEnabled }: { soundEnabled: boolean }) {
+  const [pops, setPops] = useState<{id:number;x:number;y:number}[]>([]);
+  const soundContext = useRef<AudioContext | null>(null);
+  const popNumber = useRef(0);
+  useEffect(() => {
+    const playPop = () => {
+      if (!soundEnabled) return;
+      try {
+        const Audio = window.AudioContext || (window as Window & {webkitAudioContext?: typeof AudioContext}).webkitAudioContext;
+        if (!Audio) return;
+        const context = soundContext.current || new Audio();
+        soundContext.current = context;
+        void context.resume().then(() => {
+          const oscillator = context.createOscillator();
+          const gain = context.createGain();
+          const now = context.currentTime;
+          oscillator.type = 'sine';
+          oscillator.frequency.setValueAtTime(650, now);
+          oscillator.frequency.exponentialRampToValueAtTime(230, now + .09);
+          gain.gain.setValueAtTime(.0001, now);
+          gain.gain.exponentialRampToValueAtTime(.045, now + .008);
+          gain.gain.exponentialRampToValueAtTime(.0001, now + .12);
+          oscillator.connect(gain); gain.connect(context.destination);
+          oscillator.start(now); oscillator.stop(now + .13);
+          oscillator.onended = () => { oscillator.disconnect(); gain.disconnect(); };
+        }).catch(() => {});
+      } catch { /* The visual pop still works in browsers without Web Audio. */ }
+    };
+    const celebrate = (target: Element | null, x: number, y: number) => {
+      if (target?.closest('button, a')) playPop();
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const id = ++popNumber.current;
+      setPops(items => [...items.slice(-5), {id, x, y}]);
+      setTimeout(() => setPops(items => items.filter(item => item.id !== id)), 800);
+    };
+    const pointer = (event: PointerEvent) => {
+      if (event.pointerType === 'mouse' && event.button !== 0) return;
+      if ((event.target as Element)?.closest('canvas')) return;
+      celebrate(event.target as Element, event.clientX, event.clientY);
+    };
+    const keyboard = (event: MouseEvent) => {
+      const target = event.target as Element;
+      if (event.detail !== 0 || !target?.closest('button, a')) return;
+      const rect = target.getBoundingClientRect();
+      celebrate(target, rect.left + rect.width / 2, rect.top + rect.height / 2);
+    };
+    document.addEventListener('pointerdown', pointer);
+    document.addEventListener('click', keyboard);
+    return () => { document.removeEventListener('pointerdown', pointer); document.removeEventListener('click', keyboard); };
+  }, [soundEnabled]);
+  useEffect(() => () => { void soundContext.current?.close().catch(() => {}); }, []);
+  return <div className="pointer-events-none fixed inset-0 z-[100] overflow-hidden" aria-hidden="true">{pops.map(pop => <motion.span key={pop.id} className="absolute text-[#EBA5AC]" style={{left:pop.x-12,top:pop.y-12}} initial={{scale:.4,opacity:1,y:0,rotate:-15}} animate={{scale:1.4,opacity:0,y:-75,rotate:15}} transition={{duration:.8}}><Heart size={25} fill="currentColor"/></motion.span>)}</div>;
 }

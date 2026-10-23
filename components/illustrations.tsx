@@ -1,4 +1,7 @@
+"use client";
+
 import { useId } from "react";
+import { motion, useReducedMotion } from "framer-motion";
 
 type MascotProps = { className?: string; mood?: string };
 const ink = "#65513F";
@@ -8,38 +11,97 @@ function Eye({ x, y, happy = false }: { x: number; y: number; happy?: boolean })
   return happy ? <path d={`M${x - 4} ${y + 1}q4 -6 8 0`} fill="none" stroke={ink} strokeWidth="3.5" strokeLinecap="round" /> : <g><ellipse cx={x} cy={y} rx="4" ry="5.5" fill={ink} /><circle cx={x + 1} cy={y - 2} r="1.2" fill={cream} /></g>;
 }
 
-/** Original Little Lights mascot. Scalable artwork, never a remote image dependency. */
+/** Lumo's two-second hello is part of the bedtime ritual. */
 export function Lumo({ className = "", mood = "happy" }: MascotProps) {
+  const uid = useId().replace(/:/g, "");
+  const reduced = useReducedMotion();
   const sad = mood === "sad";
   return <svg viewBox="0 0 180 180" className={`mascot-lumo ${className}`} role="img" aria-label={`Lumo, a ${sad ? "gentle" : "happy"} little golden star`}>
-    <ellipse cx="92" cy="163" rx="44" ry="7" fill="#CBAE75" opacity=".15" />
-    <path d="M61 131q-6 19 2 24q8 4 13-2M109 132q5 20 13 20q9-1 12-6" fill="none" stroke={ink} strokeWidth="7" strokeLinecap="round" />
-    <path d="M38 89Q14 88 14 72q0-8 7-8M144 86q21-10 19-24m-1 1 7-6m-7 6-5-7" fill="none" stroke={ink} strokeWidth="6" strokeLinecap="round" />
-    <path d="m91 18 21 39 43 8q12 2 4 13l-28 30 4 43q1 12-11 7l-36-18-37 18q-12 5-10-8l6-43-29-31q-8-9 5-12l43-7 18-38q4-10 7-1Z" fill="#FFE575" stroke={ink} strokeWidth="4" strokeLinejoin="round" />
-    <path d="m88 23 22 41 41 7-30 33 8 45-41-22-42 22 9-45-30-32 42-8Z" fill="#FFD93D" />
-    <path d="m86 37-12 26-27 6" fill="none" stroke="#FFF1A5" strokeWidth="6" strokeLinecap="round" />
-    <ellipse cx="64" cy="103" rx="11" ry="7" fill="#F4B28C" /><ellipse cx="115" cy="103" rx="11" ry="7" fill="#F4B28C" />
-    <Eye x={75} y={88} happy={mood === "cheering"} /><Eye x={104} y={88} happy={mood === "cheering"} />
-    <path d={sad ? "M81 111q9-9 18 0" : "M79 104q10 13 21 0"} fill="none" stroke={ink} strokeWidth="3.5" strokeLinecap="round" />
-    <path d="m152 24 2 7 7 2-7 2-2 7-2-7-7-2 7-2Zm-130 17 1 4 5 2-5 1-1 5-2-5-4-1 4-2Z" fill="#E7B647" />
+    <defs>
+      <radialGradient id={`${uid}-glow`}><stop stopColor="#FFDB62" stopOpacity=".6" /><stop offset="1" stopColor="#FFDB62" stopOpacity="0" /></radialGradient>
+      <linearGradient id={`${uid}-gold`} x2="0" y2="1"><stop stopColor="#FFEB80" /><stop offset=".6" stopColor="#FFDA45" /><stop offset="1" stopColor="#FBCB44" /></linearGradient>
+    </defs>
+    <circle cx="89" cy="89" r="87" fill={`url(#${uid}-glow)`} />
+    <ellipse cx="91" cy="165" rx="40" ry="6" fill="#D7B16E" opacity=".2" />
+    <motion.g initial={{ y: 0 }} animate={reduced ? { y: 0 } : { y: [0, -6, 0] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut" }}>
+      <path d="M64 132q-5 18 3 23 6 4 13-1m27-22q4 20 12 20 8 0 12-6" fill="none" stroke="#8D6949" strokeWidth="6" strokeLinecap="round" />
+      <path d="M36 94Q14 94 14 80q0-8 7-9m-7 9-5-4" fill="none" stroke="#8D6949" strokeWidth="5" strokeLinecap="round" />
+      <motion.g initial={{ rotate: 0 }} animate={reduced ? { rotate: 0 } : { rotate: [0, -14, 9, -8, 0] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ originX: 0, originY: 1 }}>
+        <path d="M143 96q20-8 20-25m0 1 6-6m-6 6-5-8" fill="none" stroke="#8D6949" strokeWidth="5" strokeLinecap="round" />
+      </motion.g>
+      <path d="M84 23q7-14 15 0l17 33q3 6 10 7l31 6q17 3 5 16l-24 25q-5 5-3 12l5 31q3 17-12 9l-30-16q-7-4-14 0l-31 16q-15 8-12-9l6-31q2-8-4-14L20 84q-12-12 5-15l33-6q7-1 10-8Z" fill={`url(#${uid}-gold)`} stroke="#AD7D3C" strokeWidth="3.5" strokeLinejoin="round" />
+      <path d="m85 37-13 27q-2 6-9 7l-25 5" fill="none" stroke="#FFF4BC" strokeWidth="7" strokeLinecap="round" />
+      <ellipse cx="61" cy="108" rx="12" ry="7.5" fill="#F7AE8D" opacity=".8" /><ellipse cx="118" cy="108" rx="12" ry="7.5" fill="#F7AE8D" opacity=".8" />
+      {mood === "sleeping" ? <path d="M65 91q9 8 18 0m15 0q9 8 18 0" fill="none" stroke={ink} strokeWidth="4" strokeLinecap="round" /> : <g>
+        <ellipse cx="75" cy="91" rx="9" ry="12.5" fill="#574536" /><ellipse cx="106" cy="91" rx="9" ry="12.5" fill="#574536" />
+        <ellipse cx="72.5" cy="87" rx="3.7" ry="4.5" fill="#FFFDFA" /><ellipse cx="103.5" cy="87" rx="3.7" ry="4.5" fill="#FFFDFA" />
+        <circle cx="79" cy="96" r="2.2" fill="#FFFDFA" /><circle cx="110" cy="96" r="2.2" fill="#FFFDFA" />
+      </g>}
+      {sad ? <path d="M82 116q9-9 18 0" fill="none" stroke={ink} strokeWidth="3.5" strokeLinecap="round" /> : <><path d="M80 111q11 19 23 0Z" fill="#75503C" /><path d="M85 119q6-5 12 0-5 7-12 0Z" fill="#F1A18E" /></>}
+    </motion.g>
+    <motion.g initial={{ opacity: .5, scale: .9 }} animate={reduced ? { opacity: .5, scale: .9 } : { opacity: [.5, 1, .5], scale: [.9, 1.1, .9] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ originX: .5, originY: .5 }}>
+      <Sparkle x={151} y={29} size={11} color="#E5B648" /><Sparkle x={25} y={40} size={7} color="#F0C755" /><Sparkle x={156} y={133} size={5} color="#E9BD54" />
+    </motion.g>
   </svg>;
 }
 
-/** Pip's warm cream wool intentionally avoids bright white for bedtime. */
+/** Pip has pillow-soft wool, little waving hooves, and an occasional sleepy yawn. */
 export function Pip({ className = "", mood = "happy" }: MascotProps) {
+  const uid = useId().replace(/:/g, "");
+  const reduced = useReducedMotion();
+  const sleeping = mood === "sleeping";
   return <svg viewBox="0 0 180 180" className={`mascot-pip ${className}`} role="img" aria-label="Pip, a cuddly little lamb">
-    <ellipse cx="91" cy="163" rx="43" ry="7" fill="#CBAE75" opacity=".15" />
-    <path d="M62 133v19q0 8 10 8h6v-24m28-1v18q0 8 10 8h6v-29" fill="#D6B995" stroke={ink} strokeWidth="3.5" strokeLinejoin="round" />
-    <path d="M49 87q-19-2-20 13q-1 12 11 17-5 15 10 20 5 18 24 12 11 14 25 3 18 7 27-7 18 2 20-16 15-7 10-22 8-16-7-26-1-15-17-16-8-17-24-9-15-11-27 0-20-2-21 16Z" fill={cream} stroke={ink} strokeWidth="3.5" />
-    <path d="M54 69Q18 51 22 74q5 23 31 22m73-27q37-17 32 7-6 22-30 20" fill="#D8BEA4" stroke={ink} strokeWidth="3.5" />
-    <path d="M49 76q-13-9-17-5 3 12 16 15m83-10q13-9 17-5-3 12-16 15" fill="#EEC3AF" />
-    <path d="M52 66q1-26 38-26t38 26v34q-1 33-38 33t-38-33Z" fill="#E8D1AF" stroke={ink} strokeWidth="3.5" />
-    <path d="M49 62q-9-17 6-25-2-18 17-18 14-16 29-3 20-7 26 11 17 1 15 19 12 17-5 25-12 8-24-2-13 9-24-2-15 9-25-2-8 5-15-3Z" fill={cream} stroke={ink} strokeWidth="3.5" />
-    <ellipse cx="66" cy="102" rx="10" ry="6" fill="#ECA990" /><ellipse cx="113" cy="102" rx="10" ry="6" fill="#ECA990" />
-    <Eye x={74} y={88} happy={mood === "cheering" || mood === "sleeping"} /><Eye x={106} y={88} happy={mood === "cheering" || mood === "sleeping"} />
-    <path d="m85 103 5 4 5-4m-5 4v5m-9 0q9 9 18 0" fill="none" stroke={ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
-    <path d="M44 126q5-10 14-7m73 4q11-4 15 4" fill="none" stroke="#EADCC4" strokeWidth="4" strokeLinecap="round" />
-    <path d="m40 26 3 7 7 3-7 2-3 8-2-8-8-2 8-3Z" fill="#FFD93D" />
+    <defs><linearGradient id={`${uid}-wool`} x2="0" y2="1"><stop stopColor="#FFFDFA" /><stop offset="1" stopColor="#F5ECD9" /></linearGradient><linearGradient id={`${uid}-face`} x2="0" y2="1"><stop stopColor="#F5DCC0" /><stop offset="1" stopColor="#EBC9AB" /></linearGradient></defs>
+    <ellipse cx="91" cy="166" rx="41" ry="6" fill="#C8AA82" opacity=".19" />
+    <motion.g initial={{ y: 0, rotate: 0 }} animate={reduced ? { y: 0, rotate: 0 } : { y: [0, -3, 0], rotate: [0, -1.2, 0] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ originX: .5, originY: 1 }}>
+      <path d="M65 132v22q0 8 11 8h3v-24m25-2v18q0 8 11 8h5v-28" fill="#D9B795" stroke="#947759" strokeWidth="3.5" strokeLinejoin="round" />
+      <path d="M47 87q-18-1-20 14-1 13 10 18-4 17 12 21 7 18 25 11 12 13 25 2 18 6 27-8 19 0 20-18 15-7 9-22 7-15-8-25-1-16-17-17-9-16-25-8-15-11-27 0-20-1-21 17Z" fill={`url(#${uid}-wool)`} stroke="#A08A6D" strokeWidth="3" />
+      <motion.g initial={{ rotate: 0 }} animate={reduced ? { rotate: 0 } : { rotate: [0, 15, -6, 0] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut", delay: .2 }} style={{ originX: 1, originY: 1 }}>
+        <path d="M41 117Q19 110 20 93q0-8 6-9 7 0 8 9l5 6" fill="#E7C9AB" stroke="#947759" strokeWidth="3" strokeLinecap="round" /><path d="m24 90 8 3" stroke="#947759" strokeWidth="2.5" strokeLinecap="round" />
+      </motion.g>
+      <path d="M53 67Q25 49 22 69q-2 23 27 30m78-32q28-18 32 2 2 23-27 30" fill="#E8C8AC" stroke="#A08A6D" strokeWidth="3" />
+      <path d="M45 75q-11-9-15-5 1 12 15 18m90-13q11-9 15-5-1 12-15 18" fill="#EFAFAD" />
+      <path d="M51 66q0-27 39-27t39 27v34q-2 34-39 34t-39-34Z" fill={`url(#${uid}-face)`} stroke="#A08A6D" strokeWidth="3" />
+      <path d="M47 62q-9-17 7-25-1-19 17-19 15-15 29-2 20-7 27 10 18 2 15 20 12 17-4 25-13 9-25-2-13 9-25-1-15 8-24-3-10 6-17-3Z" fill={`url(#${uid}-wool)`} stroke="#A08A6D" strokeWidth="3" />
+      <path d="M61 40q-4-10 6-12m18 1q5-8 12-4m21 12q10 1 10 10" fill="none" stroke="#FFFDF9" strokeWidth="5" strokeLinecap="round" />
+      <ellipse cx="64" cy="104" rx="12" ry="7.5" fill="#EFA9A1" opacity=".85" /><ellipse cx="116" cy="104" rx="12" ry="7.5" fill="#EFA9A1" opacity=".85" />
+      {mood === "cheering" ? <><Eye x={74} y={89} happy /><Eye x={106} y={89} happy /></> : <path d="M65 87q9 9 18 0m15 0q9 9 18 0m-49 3-3 4m51-4 3 4" fill="none" stroke={ink} strokeWidth="3.3" strokeLinecap="round" />}
+      <path d="m85 104 5 4 5-4q-5-4-10 0Z" fill="#A57468" /><path d="M90 108v4" stroke={ink} strokeWidth="2" />
+      {sleeping ? <motion.ellipse cx="90" cy="119" rx="5" ry="6" fill="#8E6856" initial={{ scaleY: .6 }} animate={reduced ? { scaleY: .6 } : { scaleY: [.6, .6, 1.35, 1, .6] }} transition={reduced ? { duration: 0 } : { duration: 6, repeat: Infinity, times: [0, .35, .6, .8, 1] }} style={{ originX: .5, originY: .5 }} /> : <>
+        <motion.path d="M82 114q8 9 16 0" fill="none" stroke={ink} strokeWidth="2.5" strokeLinecap="round" initial={{ opacity: 1 }} animate={reduced ? { opacity: 1 } : { opacity: [1, 1, 0, 0, 1] }} transition={reduced ? { duration: 0 } : { duration: 6, repeat: Infinity, times: [0, .5, .65, .85, 1] }} />
+        <motion.ellipse cx="90" cy="119" rx="5.5" ry="7" fill="#966B5B" initial={{ opacity: 0, scaleY: .65 }} animate={reduced ? { opacity: 0, scaleY: .65 } : { opacity: [0, 0, 1, 1, 0], scaleY: [.65, .65, 1, 1, .65] }} transition={reduced ? { duration: 0 } : { duration: 6, repeat: Infinity, times: [0, .5, .65, .85, 1] }} />
+      </>}
+      <path d="M44 132q5-11 14-7m70 4q10-6 15 1" fill="none" stroke="#E8DBC5" strokeWidth="4" strokeLinecap="round" />
+    </motion.g>
+    <Sparkle x={39} y={29} size={7} color="#EDC85E" />
+    {sleeping && <g fill="#A7ADB8" fontFamily="sans-serif" fontWeight="bold"><text x="144" y="37" fontSize="15">z</text><text x="158" y="23" fontSize="20">z</text></g>}
+  </svg>;
+}
+
+/** A tiny treasure box for a very big sticker collection. */
+export function TreasureChest({ className = "" }: { className?: string }) {
+  const uid = useId().replace(/:/g, "");
+  const reduced = useReducedMotion();
+  return <svg viewBox="0 0 220 190" className={className} role="img" aria-label="A little treasure chest full of golden stars and stickers">
+    <defs><linearGradient id={`${uid}-chest`} x2="0" y2="1"><stop stopColor="#F5C887" /><stop offset="1" stopColor="#DB9E65" /></linearGradient><linearGradient id={`${uid}-lid`} x2="0" y2="1"><stop stopColor="#F6DAAC" /><stop offset="1" stopColor="#E7AE78" /></linearGradient><radialGradient id={`${uid}-shine`}><stop stopColor="#FFE58C" stopOpacity=".65" /><stop offset="1" stopColor="#FFE58C" stopOpacity="0" /></radialGradient></defs>
+    <circle cx="110" cy="91" r="87" fill={`url(#${uid}-shine)`} />
+    <ellipse cx="112" cy="173" rx="78" ry="10" fill="#C8AA82" opacity=".16" />
+    <g stroke="#9A714E" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M35 91V62q0-34 34-34h75q33 0 37 34l4 29Z" fill={`url(#${uid}-lid)`} /><path d="M37 73h146M62 31v58m92-56v57" fill="none" stroke="#ECC16B" strokeWidth="12" /><path d="M36 90q74-31 150 0l-10 29H44Z" fill="#9E7057" />
+    </g>
+    <g transform="translate(0 3)">
+      <path d="m91 62 8 13 15 2-11 11 2 15-14-7-14 7 3-15-12-11 16-2Z" fill="#FFDC62" stroke="#B18A41" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M131 84q-23-17-11-29 10-9 18 1 9-8 17 1 11 14-24 27Z" fill="#F3B7A9" stroke="#B98976" strokeWidth="2.5" />
+      <circle cx="60" cy="91" r="17" fill="#C9E0B4" stroke="#91AF7C" strokeWidth="2.5" /><path d="m52 91 5 5 10-12" fill="none" stroke="#718A5F" strokeWidth="3" strokeLinecap="round" />
+      <path d="m160 78 8 13 15 2-11 11 2 15-14-7-14 7 3-15-12-11 16-2Z" fill="#FFE193" stroke="#B18A41" strokeWidth="2.5" strokeLinejoin="round" />
+    </g>
+    <g stroke="#9A714E" strokeWidth="3" strokeLinejoin="round">
+      <path d="M32 99q1-10 10-10h136q10 0 10 10l-7 57q-1 12-14 12H53q-13 0-14-12Z" fill={`url(#${uid}-chest)`} /><path d="M39 119h143m-140 24h137" fill="none" stroke="#BD8559" strokeWidth="2" /><path d="m53 90 7 78m103-78-6 78" fill="none" stroke="#F8DA83" strokeWidth="13" /><path d="m53 90 7 78m103-78-6 78" fill="none" stroke="#BE9652" strokeWidth="1.5" /><rect x="93" y="106" width="35" height="41" rx="11" fill="#FFE095" stroke="#B08A49" />
+      <path d="m110 114 4 7 8 1-6 6 1 8-7-4-8 4 2-8-6-6 8-1Z" fill="#DCA64B" stroke="#C18F42" strokeWidth="1.5" />
+      <circle cx="110" cy="126" r="3.3" fill="#96704B" stroke="none" /><path d="M108 128h4l1 7h-6Z" fill="#96704B" stroke="none" />
+    </g>
+    <path d="M44 103h34m69 0h28" fill="none" stroke="#FFE7B3" strokeWidth="3.5" strokeLinecap="round" opacity=".8" />
+    <motion.g initial={{ opacity: .5, scale: .9 }} animate={reduced ? { opacity: .5, scale: .9 } : { opacity: [.5, 1, .5], scale: [.9, 1.06, .9] }} transition={reduced ? { duration: 0 } : { duration: 2, repeat: Infinity, ease: "easeInOut" }} style={{ originX: .5, originY: .5 }}><Sparkle x={24} y={57} size={10} color="#E4B453" /><Sparkle x={188} y={34} size={9} color="#EBC15E" /><Sparkle x={201} y={122} size={7} color="#E6B75B" /><Sparkle x={53} y={15} size={6} color="#EDC95F" /></motion.g>
   </svg>;
 }
 
@@ -86,7 +148,7 @@ export function StoryScene({ scene = "ark", className = "" }: { scene?: string; 
   const normalized = /noah|rainbow|boat/.test(scene) ? "ark" : /creation|eden/.test(scene) ? "garden" : /abraham|night/.test(scene) ? "stars" : /jonah|whale/.test(scene) ? "sea" : /david/.test(scene) ? "courage" : /lost|lamb/.test(scene) ? "sheep" : scene;
   const kind = labels[normalized] ? normalized : "garden";
   const night = kind === "stars" || kind === "peace";
-  return <svg viewBox="0 0 640 420" className={`story-scene ${className}`} role="img" aria-label={labels[kind]} xmlns="http://www.w3.org/2000/svg">
+  return <svg viewBox="0 0 640 420" preserveAspectRatio="xMidYMid slice" className={`story-scene ${className}`} role="img" aria-label={labels[kind]} xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id={`${uid}-sky`} x2="0" y2="1"><stop stopColor={night ? "#8595BE" : "#B9E0E8"} /><stop offset="1" stopColor={night ? "#C9BDD2" : "#F7EED4"} /></linearGradient>
       <linearGradient id={`${uid}-sea`} x2="0" y2="1"><stop stopColor="#9ED2D5" /><stop offset="1" stopColor="#77B6C7" /></linearGradient>
@@ -109,8 +171,23 @@ export function StoryScene({ scene = "ark", className = "" }: { scene?: string; 
       <path d="M0 277q70-51 144-17 74-52 161-9 78-53 167-17 94-32 168 28v158H0Z" fill="#AEC7AA" />
       <path d="M0 310q80-33 161-7 77-26 158-1 91-28 168-4 84-28 153 5v117H0Z" fill={`url(#${uid}-sea)`} />
       <g stroke={ink} strokeWidth="3.5" strokeLinejoin="round"><path d="M166 264h309q-19 100-150 101-128-1-159-101Z" fill={`url(#${uid}-wood)`} /><path d="M180 288q142 33 281 0m-265 26q122 28 249 0m-219 24q103 18 189-1" fill="none" stroke="#A97956" strokeWidth="2" /><path d="M204 259V190q0-14 14-14h207q14 0 14 14v69Z" fill="#E8C09A" /><path d="m185 186 128-72q8-4 16 0l128 72Z" fill="#C9916D" /><path d="m206 179 112-59q7-3 11 0l108 59" fill="none" stroke="#E8BA8F" strokeWidth="4" /><rect x="292" y="208" width="52" height="53" rx="24" fill="#967354" /><circle cx="243" cy="220" r="18" fill="#B5DDE1" /><circle cx="393" cy="220" r="18" fill="#B5DDE1" /><path d="M243 202v36m-18-18h36m132-18v36m-18-18h36" fill="none" strokeWidth="2.5" /></g>
-      <g transform="translate(378 167)" stroke={ink} strokeWidth="3" strokeLinecap="round"><path d="M-8 10v-40q0-14 12-14t12 14v40" fill="#EAC382" /><ellipse cx="4" cy="-40" rx="21" ry="18" fill="#EBCB8F" /><path d="m-10-52-4-10m29 10 5-10" /><path d="m-17-44-14-8m52 8 12-8" strokeWidth="6" /><circle cx="-3" cy="-44" r="2" fill={ink} /><circle cx="12" cy="-44" r="2" fill={ink} /><ellipse cx="5" cy="-33" rx="13" ry="7" fill="#E8B587" stroke="none" /><path d="M-8-17h8m5 16h8" stroke="#C18E57" strokeWidth="7" /></g>
-      <g transform="translate(258 172)" stroke={ink} strokeWidth="3"><ellipse cx="0" cy="-18" rx="26" ry="22" fill="#AAC3C7" /><ellipse cx="-24" cy="-15" rx="12" ry="17" fill="#BAD1D1" /><ellipse cx="24" cy="-15" rx="12" ry="17" fill="#BAD1D1" /><path d="M-4-6v21q2 11 12 6l6-4" fill="#AAC3C7" strokeLinecap="round" /><circle cx="-10" cy="-21" r="2.4" fill={ink} stroke="none" /><circle cx="10" cy="-21" r="2.4" fill={ink} stroke="none" /></g>
+      <g transform="translate(387 171)" stroke={ink} strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M-11 11v-41q0-18 15-18t15 18v41" fill="#F2CE8D" />
+        <path d="m-13-53-5-13m36 13 6-13" stroke="#B28C5D" strokeWidth="5" /><circle cx="-18" cy="-67" r="4" fill="#BD9566" stroke="none" /><circle cx="24" cy="-67" r="4" fill="#BD9566" stroke="none" />
+        <path d="M-18-49q-22-17-24-5 2 13 23 13m42-8q23-17 25-5-3 13-24 13" fill="#E9BC7D" />
+        <ellipse cx="4" cy="-43" rx="28" ry="24" fill="#F4D69F" /><path d="M-11-60q13-11 26 0" fill="none" stroke="#FFE6B5" strokeWidth="4" />
+        <ellipse cx="-6" cy="-45" rx="4" ry="5.5" fill={ink} stroke="none" /><ellipse cx="13" cy="-45" rx="4" ry="5.5" fill={ink} stroke="none" /><circle cx="-7" cy="-47" r="1.4" fill="#FFFDFA" stroke="none" /><circle cx="12" cy="-47" r="1.4" fill="#FFFDFA" stroke="none" />
+        <ellipse cx="4" cy="-28" rx="21" ry="12" fill="#EDC090" stroke="none" /><circle cx="-4" cy="-31" r="1.5" fill="#A27E55" stroke="none" /><circle cx="12" cy="-31" r="1.5" fill="#A27E55" stroke="none" /><path d="M0-23q5 4 9 0" fill="none" strokeWidth="2" />
+        <ellipse cx="-17" cy="-35" rx="5" ry="3" fill="#EDB19D" stroke="none" /><ellipse cx="25" cy="-35" rx="5" ry="3" fill="#EDB19D" stroke="none" /><path d="M-9-9h7M9 5h7" stroke="#D1A268" strokeWidth="7" />
+      </g>
+      <g transform="translate(251 168)" stroke={ink} strokeWidth="2.8" strokeLinecap="round">
+        <ellipse cx="-31" cy="-14" rx="18" ry="23" fill="#AED1D7" /><ellipse cx="31" cy="-14" rx="18" ry="23" fill="#AED1D7" /><ellipse cx="-31" cy="-14" rx="11" ry="15" fill="#D5DADB" stroke="none" /><ellipse cx="31" cy="-14" rx="11" ry="15" fill="#D5DADB" stroke="none" />
+        <ellipse cy="-17" rx="31" ry="28" fill="#B9D7DC" /><path d="M-13-34q12-8 25 0" fill="none" stroke="#E2ECE6" strokeWidth="4" />
+        <path d="M-6-4V18q1 14 14 10l10-8q4-7-3-9-4 0-8 5V-4" fill="#B9D7DC" /><path d="m-3 8 7 1m-6 6 6 1" fill="none" stroke="#8EB5BF" strokeWidth="2" />
+        <ellipse cx="-11" cy="-18" rx="4" ry="5.5" fill={ink} stroke="none" /><ellipse cx="11" cy="-18" rx="4" ry="5.5" fill={ink} stroke="none" /><circle cx="-12" cy="-20" r="1.5" fill="#FFFDFA" stroke="none" /><circle cx="10" cy="-20" r="1.5" fill="#FFFDFA" stroke="none" />
+        <ellipse cx="-19" cy="-5" rx="7" ry="4.5" fill="#EDB4AB" stroke="none" /><ellipse cx="20" cy="-5" rx="7" ry="4.5" fill="#EDB4AB" stroke="none" />
+      </g>
+      <g transform="translate(318 170)" stroke={ink} strokeWidth="2.4" strokeLinecap="round"><ellipse cx="-9" cy="-38" rx="7" ry="20" fill="#FFF6E5" transform="rotate(-12)" /><ellipse cx="9" cy="-38" rx="7" ry="20" fill="#FFF6E5" transform="rotate(12)" /><path d="m-12-48 2 20m22-20-2 20" stroke="#F0BAB2" strokeWidth="4" /><ellipse cy="-12" rx="22" ry="20" fill="#FFF6E5" /><g fill={ink} stroke="none"><ellipse cx="-7" cy="-15" rx="2.5" ry="3.5" /><ellipse cx="7" cy="-15" rx="2.5" ry="3.5" /></g><path d="m-3-6 3 2 3-2m-3 2v4" fill="none" strokeWidth="1.5" /><ellipse cx="-13" cy="-7" rx="5" ry="3" fill="#F0BBB2" stroke="none" /><ellipse cx="13" cy="-7" rx="5" ry="3" fill="#F0BBB2" stroke="none" /></g>
       <SmallSheep x={179} y={249} scale={.65} />
       <g fill="none" stroke="#D4EBDF" strokeWidth="4" strokeLinecap="round"><path d="M51 338q24 8 49 0m402 17q27 7 56-2M169 389q24 7 49 0m110 3q24 8 49 0M20 384q17 6 34 0m485-53q25 8 49 0" /></g>
       <g transform="translate(529 293)"><path d="M0 0q18-19 36 0-18 15-36 0Z" fill={cream} stroke={ink} strokeWidth="2.5" /><path d="m13-3 8-17 6 18" fill={cream} stroke={ink} strokeWidth="2" /><circle cx="30" cy="-2" r="1.5" fill={ink} /><path d="m36-2 7 3-7 2" fill="#E1A65E" /></g>
